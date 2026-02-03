@@ -313,6 +313,16 @@ namespace eCommerce.Services.Database
                 new UserRole { Id = 1, UserId = 1, RoleId = 1, DateAssigned = DateTime.UtcNow },
                 new UserRole { Id = 2, UserId = 2, RoleId = 2, DateAssigned = DateTime.UtcNow }
             );
+             modelBuilder.Entity<ProductDiscountIB200116>().HasData(
+                new ProductDiscountIB200116 { Id = 3, ProductId = 1,Discount=0.15m,BeganAt = DateTime.UtcNow, 
+        ValidUntil = DateTime.UtcNow.AddDays(30)},
+        new ProductDiscountIB200116 { Id = 4, ProductId = 3,Discount=0.20m,BeganAt = DateTime.UtcNow, 
+        ValidUntil = DateTime.UtcNow.AddDays(30)},
+        new ProductDiscountIB200116 { Id = 5, ProductId = 2,Discount=0.59m,BeganAt = DateTime.UtcNow, 
+        ValidUntil = DateTime.UtcNow.AddDays(30)}, 
+        new ProductDiscountIB200116 { Id = 67, ProductId = 5,Discount=0,BeganAt = DateTime.UtcNow, 
+        ValidUntil = DateTime.UtcNow.AddDays(30)}
+            );
 
         }
     }

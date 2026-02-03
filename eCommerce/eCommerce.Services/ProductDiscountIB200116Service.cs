@@ -25,7 +25,13 @@ namespace eCommerce.Services
 
         protected override IQueryable<ProductDiscountIB200116> ApplyFilter(IQueryable<ProductDiscountIB200116> query, BaseSearchObject search)
         {
-            return query.Include(x=>x.Product);
+            query=query.Include(x=>x.Product).ThenInclude(x=>x.Assets);
+            if (!string.IsNullOrEmpty(search.FTS))
+            {
+                query = query.Where(p => p.Product.Name.Contains(search.FTS)&&p.Discount>0);
+            }
+            
+            return query;
         }
 
     }
