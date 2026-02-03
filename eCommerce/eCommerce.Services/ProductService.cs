@@ -29,7 +29,7 @@ namespace eCommerce.Services
         {
             if (!string.IsNullOrEmpty(search.FTS))
             {
-                query = query.Where(p => p.Name.Contains(search.FTS) || p.Description.Contains(search.FTS));
+                query = query.Where(p => p.Name.Contains(search.FTS) || p.Description.Contains(search.FTS)&&p.hasDiscount==true);
             }
 
             query = query.Include(x => x.Assets);

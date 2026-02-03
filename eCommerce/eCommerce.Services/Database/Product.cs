@@ -65,5 +65,7 @@ namespace eCommerce.Services.Database
 
         [MaxLength(1000)]
         public string ProductState { get; set; } = string.Empty;
+
+        public bool hasDiscount { get; set; }
     }
 } 
