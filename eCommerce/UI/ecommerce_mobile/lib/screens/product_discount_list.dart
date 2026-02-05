@@ -3,6 +3,8 @@ import 'package:ecommerce_mobile/model/product_discount.dart';
 import 'package:ecommerce_mobile/model/search_result.dart';
 import 'package:ecommerce_mobile/providers/product_discount_provider.dart';
 import 'package:ecommerce_mobile/providers/utils.dart';
+import 'package:ecommerce_mobile/screens/product_details_screen.dart';
+import 'package:ecommerce_mobile/screens/product_discount_details.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -24,6 +26,7 @@ class _ProductDiscountListState extends State<ProductDiscountList> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    loadData();
   }
 
   @override
@@ -94,36 +97,44 @@ class _ProductDiscountListState extends State<ProductDiscountList> {
     }
 
     List<Widget> list = data!.items!
-        .map((x) => Container(
-              child: Column(
-                children: [
-                  Container(
-                    height: 100,
-                    width: 100,
-                    child: x.product!.assets.firstOrNull == null
-                        ? Placeholder()
-                        : imageFromString(
-                            x.product!.assets.first.base64Content),
-                  ),
-                  Text(x.product!.name),
-                  Text(formatNumber(x.product!.price)),
-                  Text("Discount:${x.discount * 100}%"),
-                  Text(
-                      "New price: ${formatNumber(x.product!.price! * (1 - x.discount))}"),
-                  Text(
-                      "Vazi od ${DateFormat('dd/MM/yyyy').format(x.beganAt!)} do ${DateFormat('dd/MM/yyyy').format(x.validUntil!)}"),
-                  IconButton(
-                      onPressed: () {
-                        productDiscountProvider.update(x.id, {
-                          'productId': x.productId,
-                          'discount': 0,
-                          'beganAt': x.beganAt!.toIso8601String(),
-                          'validUntil': x.validUntil!.toIso8601String()
-                        });
-                        loadData();
-                      },
-                      icon: Icon(Icons.delete))
-                ],
+        .map((x) => GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => ProductDiscountDetailsScreen(
+                          productDiscount: x,
+                        )));
+              },
+              child: Container(
+                child: Column(
+                  children: [
+                    Container(
+                      height: 100,
+                      width: 100,
+                      child: x.product!.assets.firstOrNull == null
+                          ? Placeholder()
+                          : imageFromString(
+                              x.product!.assets.first.base64Content),
+                    ),
+                    Text(x.product!.name),
+                    Text(formatNumber(x.product!.price)),
+                    Text("Discount:${x.discount * 100}%"),
+                    Text(
+                        "New price: ${formatNumber(x.product!.price! * (1 - x.discount))}"),
+                    Text(
+                        "Vazi od ${DateFormat('dd/MM/yyyy').format(x.beganAt!)} do ${DateFormat('dd/MM/yyyy').format(x.validUntil!)}"),
+                    IconButton(
+                        onPressed: () {
+                          productDiscountProvider.update(x.id, {
+                            'productId': x.productId,
+                            'discount': 0,
+                            'beganAt': x.beganAt!.toIso8601String(),
+                            'validUntil': x.validUntil!.toIso8601String()
+                          });
+                          loadData();
+                        },
+                        icon: Icon(Icons.delete))
+                  ],
+                ),
               ),
             ))
         .cast<Widget>()
@@ -160,6 +171,13 @@ class _ProductDiscountListState extends State<ProductDiscountList> {
                 setState(() {});
               },
               child: Text("Search"),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => ProductDiscountDetailsScreen()));
+              },
+              child: Text("Dodaj"),
             ),
             SizedBox(width: 10),
           ],
