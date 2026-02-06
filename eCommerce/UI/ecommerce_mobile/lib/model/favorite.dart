@@ -1,35 +1,24 @@
+import 'package:ecommerce_mobile/model/product.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'asset.dart';
 
-part 'product.g.dart';
+part 'favorite.g.dart';
 
 @JsonSerializable()
-class Product {
+class FavoriteIB200116 {
   final int id;
-  final String name;
-  final String code;
-  final String productState;
-  final double? price;
-  final int? unitOfMeasureId;
-  final int? productTypeId;
-  final List<Asset> assets;
-  final bool isFavorite;
+  final int? productId;
+  final Product? product;
+  final int? userId;
+  final DateTime? addedAt;
 
-  Product(
-      {this.id = 0,
-      this.name = '',
-      this.code = '',
-      this.productState = 'ActiveProductState',
-      this.price = 0,
-      this.unitOfMeasureId,
-      this.productTypeId,
-      this.assets = const [],
-      this.isFavorite = false});
+  FavoriteIB200116(
+      {this.id = 0, this.productId, this.userId, this.addedAt, this.product});
 
-  factory Product.fromJson(Map<String, dynamic> json) =>
-      _$ProductFromJson(json);
+  factory FavoriteIB200116.fromJson(Map<String, dynamic> json) =>
+      _$FavoriteIB200116FromJson(json);
 
-  Map<String, dynamic> toJson() => _$ProductToJson(this);
+  Map<String, dynamic> toJson() => _$FavoriteIB200116ToJson(this);
 
   // // Factory constructor for creating Product from JSON
   // factory Product.fromJson(Map<String, dynamic> json) {

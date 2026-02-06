@@ -63,6 +63,8 @@ namespace eCommerce.Model.Responses
 
         [MaxLength(1000)]
         public string ProductState { get; set; } = string.Empty;
+
+        public bool IsFavorite { get; set; }
         
     }
 } 

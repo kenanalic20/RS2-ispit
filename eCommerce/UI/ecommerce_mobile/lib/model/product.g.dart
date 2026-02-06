@@ -18,6 +18,7 @@ Product _$ProductFromJson(Map<String, dynamic> json) => Product(
               ?.map((e) => Asset.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const [],
+      isFavorite: json['isFavorite'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$ProductToJson(Product instance) => <String, dynamic>{
@@ -29,4 +30,5 @@ Map<String, dynamic> _$ProductToJson(Product instance) => <String, dynamic>{
       'unitOfMeasureId': instance.unitOfMeasureId,
       'productTypeId': instance.productTypeId,
       'assets': instance.assets,
+      'isFavorite': instance.isFavorite,
     };

@@ -1,5 +1,6 @@
 import 'package:ecommerce_mobile/model/cart_provider.dart';
 import 'package:ecommerce_mobile/providers/auth_provider.dart';
+import 'package:ecommerce_mobile/providers/favorite_provider.dart';
 import 'package:ecommerce_mobile/providers/logged_product_provider.dart';
 import 'package:ecommerce_mobile/providers/product_provider.dart';
 import 'package:ecommerce_mobile/providers/product_type_provider.dart';
@@ -16,7 +17,10 @@ void main() {
         create: (context) => UnitOfMeasureProvider()),
     ChangeNotifierProvider<ProductTypeProvider>(
         create: (context) => ProductTypeProvider()),
+    ChangeNotifierProvider<FavoriteProvider>(
+        create: (context) => FavoriteProvider()),
     ChangeNotifierProvider<CartProvider>(create: (context) => CartProvider()),
+    ChangeNotifierProvider<AuthProvider>(create: (context) => AuthProvider()),
   ], child: const MyLoginApp()));
 }
 

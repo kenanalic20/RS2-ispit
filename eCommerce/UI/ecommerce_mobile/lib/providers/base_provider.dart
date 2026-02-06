@@ -53,6 +53,10 @@ abstract class BaseProvider<T> with ChangeNotifier {
     var response = await http.post(uri, headers: headers, body: jsonRequest);
 
     if (isValidResponse(response)) {
+      if (response.body.isEmpty) {
+        // Handle empty response - return a default or throw
+        throw Exception("Server returned empty response");
+      }
       var data = jsonDecode(response.body);
       return fromJson(data);
     } else {
