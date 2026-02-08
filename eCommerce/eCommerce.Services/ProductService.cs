@@ -14,6 +14,7 @@ using eCommerce.Services.ProductStateMachine;
 using Microsoft.ML;
 using Microsoft.ML.Data;
 using Microsoft.ML.Trainers;
+using System.Security.Cryptography.X509Certificates;
 namespace eCommerce.Services
 {
     public class ProductService : BaseCRUDService<ProductResponse, ProductSearchObject, Database.Product, ProductInsertRequest, ProductUpdateRequest>, IProductService
@@ -73,6 +74,21 @@ namespace eCommerce.Services
             var baseState = _baseProductState.GetProductState(entity.ProductState);
 
             return await baseState.DeactivateAsync(id);
+        }
+
+        protected override ProductResponse MapToResponse(Product entity) {
+            var response = base.MapToResponse(entity);
+            var favorite = _context.FavoriteIB200116s.FirstOrDefault(x=>x.Product.Id == entity.Id);
+            if(favorite == null)
+            {
+                response.IsFavorite=false;
+            }
+            else
+            {
+                response.IsFavorite=true;
+            }
+            return response;
+            
         }
 
         public List<string> AllowedActions(int id)

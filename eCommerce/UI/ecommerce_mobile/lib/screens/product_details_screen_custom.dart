@@ -86,24 +86,11 @@ class _ProductDetailsScreenCustomState
   }
 
   Widget _buildSaveButton() {
-    return ElevatedButton(
-      onPressed: () async {
-        formKey.currentState?.saveAndValidate();
-        if (formKey.currentState?.validate() ?? false) {
-          print(formKey.currentState?.value.toString());
-          var request = Map.from(formKey.currentState?.value ?? {});
-          if (widget.product == null) {
-            widget.product = await productProvider.insert(request);
-          } else {
-            widget.product =
-                await productProvider.update(widget.product!.id, request);
-          }
-        }
-      },
-      child: IconButton(
-          color: widget.product!.isFavorite == true ? Colors.red : Colors.black,
-          onPressed: () async {
-            print(AuthProvider.username);
+    return IconButton(
+        color: widget.product!.isFavorite == true ? Colors.red : Colors.black,
+        onPressed: () async {
+          print(AuthProvider.username);
+          try {
             await favoriteProvider.insert({
               "productId": widget.product!.id,
               "username": AuthProvider.username,
@@ -111,9 +98,12 @@ class _ProductDetailsScreenCustomState
             });
             Navigator.of(context)
                 .push(MaterialPageRoute(builder: (context) => FavoriteList()));
-          },
-          icon: Icon(Icons.favorite)),
-    );
+          } catch (e) {
+            Navigator.of(context)
+                .push(MaterialPageRoute(builder: (context) => FavoriteList()));
+          }
+        },
+        icon: Icon(Icons.favorite));
   }
 
   File? _image;
@@ -141,6 +131,7 @@ class _ProductDetailsScreenCustomState
             Text(unitOfMeasures!
                 .items![widget.product!.unitOfMeasureId ?? 0].name),
             Text(productTypes!.items![widget.product!.productTypeId ?? 0].name),
+            Text(widget.product?.isFavorite == true ? 'Already favorite' : '')
           ],
         ),
       ),

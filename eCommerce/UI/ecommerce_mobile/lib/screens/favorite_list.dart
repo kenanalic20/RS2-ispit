@@ -163,12 +163,12 @@ class _FavoriteListState extends State<FavoriteList> {
                   Text(formatNumber(x.product?.price)),
                   Text(
                       textAlign: TextAlign.center,
-                      "Added to favorite: ${DateFormat('dd/MM/yyyy').format(x.addedAt!)}")
-                  // IconButton(
-                  //     onPressed: () {
-                  //       cartProvider?.addToCart(x);
-                  //     },
-                  //     icon: Icon(Icons.shopping_cart))
+                      "Added to favorite: ${DateFormat('dd/MM/yyyy').format(x.addedAt!)}"),
+                  IconButton(
+                      onPressed: () {
+                        cartProvider?.addToCart(x.product!);
+                      },
+                      icon: Icon(Icons.shopping_cart))
                 ],
               ),
             ))
