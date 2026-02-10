@@ -19,6 +19,7 @@ class _CartScreenState extends State<CartScreen> {
   void initState() {
     super.initState();
     cartProvider = context.read<CartProvider>();
+    cartProvider.loadData();
   }
 
   @override
@@ -98,9 +99,9 @@ class _CartScreenState extends State<CartScreen> {
             Container(
               height: 80,
               width: 80,
-              child: item.product.assets.firstOrNull == null 
-                ? Placeholder() 
-                : imageFromString(item.product.assets.first.base64Content),
+              child: item.product.assets.firstOrNull == null
+                  ? Placeholder()
+                  : imageFromString(item.product.assets.first.base64Content),
             ),
             SizedBox(width: 12),
             // Product Details
@@ -138,7 +139,7 @@ class _CartScreenState extends State<CartScreen> {
               ),
             ),
             // Actions
-                          Column(
+            Column(
               children: [
                 Text(
                   formatNumber((item.product.price ?? 0.0) * item.count),
@@ -150,8 +151,8 @@ class _CartScreenState extends State<CartScreen> {
                 ),
                 SizedBox(height: 8),
                 IconButton(
-                  onPressed: () {
-                    cartProvider.removeFromCart(item.product);
+                  onPressed: () async {
+                    await cartProvider.removeFromCart(item.product);
                   },
                   icon: Icon(Icons.delete, color: Colors.red),
                 ),
@@ -207,7 +208,9 @@ class _CartScreenState extends State<CartScreen> {
               onPressed: () {
                 // TODO: Implement checkout functionality
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text("Checkout functionality not implemented yet")),
+                  SnackBar(
+                      content:
+                          Text("Checkout functionality not implemented yet")),
                 );
               },
               style: ElevatedButton.styleFrom(

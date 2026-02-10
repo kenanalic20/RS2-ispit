@@ -1,8 +1,7 @@
-
 import 'package:ecommerce_mobile/model/product.dart';
 
 class Cart {
-    List<CartItem> items = [];
+  List<CartItem> items = [];
 }
 
 class CartItem {
