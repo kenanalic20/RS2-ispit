@@ -1,4 +1,5 @@
 using System.Xml.Schema;
+using Azure.Core;
 using eCommerce.Model;
 using eCommerce.Model.Requests;
 using eCommerce.Model.Responses;
@@ -48,8 +49,13 @@ namespace eCommerce.Services
 
             // Find existing cart for this user (include cart items for updating)
             var cart = await _context.Carts
-                .Include(c => c.CartItems)
+                .Include(c => c.CartItems).ThenInclude(x=>x.Product)
                 .FirstOrDefaultAsync(x => x.UserId == user.Id);
+
+            if (cart.isCheckout == true)
+            {
+                throw new UserException();
+            }
 
             if (cart == null)
             {
@@ -74,6 +80,18 @@ namespace eCommerce.Services
                     // Remove item if quantity is 0 or negative
                     if (existingCartItem != null)
                     {
+                        var cartEventReq= new CartEventIB200116Request
+                        {
+                          CartId=cart.Id,
+                          CartItemId=null,
+                          Username=user.Username,
+                          EventType="Uklanjanje produkta",
+                          ProductPrice=existingCartItem.Product.Price,
+                          ProductName = existingCartItem.Product.Name,
+                          PreviousQuantity = existingCartItem.Quantity,
+                          NewQuantity = 0
+                        };
+                        await _cartEventService.CreateAsync(cartEventReq);
                         _context.CartItems.Remove(existingCartItem);
                     }
                 }
@@ -81,6 +99,18 @@ namespace eCommerce.Services
                 {
                     if (existingCartItem != null)
                     {
+                         var cartEventReq= new CartEventIB200116Request
+                        {
+                          CartId=cart.Id,
+                          CartItemId=existingCartItem.Id,
+                          Username=user.Username,
+                          EventType="Promjena kolicine",
+                          ProductPrice=existingCartItem.Product.Price,
+                          ProductName = existingCartItem.Product.Name,
+                          PreviousQuantity = existingCartItem.Quantity,
+                          NewQuantity = itemRequest.Quantity
+                        };
+                        await _cartEventService.CreateAsync(cartEventReq);
                         // Update existing item quantity
                         existingCartItem.Quantity = itemRequest.Quantity;
                         existingCartItem.UpdatedAt = DateTime.UtcNow;
@@ -95,7 +125,23 @@ namespace eCommerce.Services
                             Quantity = itemRequest.Quantity,
                             AddedAt = DateTime.UtcNow
                         };
+                       
                         cart.CartItems.Add(newCartItem);
+
+                        await  _context.SaveChangesAsync();
+                        var cartItem =await _context.CartItems.Include(x=>x.Product).FirstOrDefaultAsync(x=>x.ProductId==newCartItem.ProductId);
+                        var cartEventReq= new CartEventIB200116Request
+                        {
+                          CartId=cart.Id,
+                          CartItemId=cartItem.Id,
+                          Username=user.Username,
+                          EventType="Dodavanje proizvoda",
+                          ProductPrice=cartItem.Product.Price,
+                          ProductName = cartItem.Product.Name,
+                          PreviousQuantity = 0,
+                          NewQuantity = cartItem.Quantity
+                        };
+                        await _cartEventService.CreateAsync(cartEventReq);
                     }
                 }
             }
@@ -114,8 +160,20 @@ namespace eCommerce.Services
         protected override async Task BeforeUpdate(Cart entity, CartRequest request)
         {
             entity.UpdatedAt = DateTime.Now;
+            entity.isCheckout = true;
         }
 
+        public async Task Checkout(int id)
+        {
+            var cart =await _context.Carts.FirstOrDefaultAsync(x=>x.Id==id);
+            if (cart == null)
+            {
+                throw new KeyNotFoundException();
+            }
+            cart.isCheckout=true;
+            cart.UpdatedAt=DateTime.UtcNow;
+            _context.SaveChanges();
+        }
 
     }
 }

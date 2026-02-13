@@ -26,5 +26,6 @@ namespace eCommerce.Services.Database
         
         // Navigation property for cart items
         public ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
+        public bool isCheckout { get; set; }
     }
 } 

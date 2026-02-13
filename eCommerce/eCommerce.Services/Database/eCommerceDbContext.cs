@@ -179,7 +179,11 @@ namespace eCommerce.Services.Database
             modelBuilder.Entity<UserRole>()
                 .HasIndex(ur => new { ur.UserId, ur.RoleId })
                 .IsUnique();
-
+            modelBuilder.Entity<CartEventIB200116>()
+    .HasOne(e => e.CartItem)
+    .WithMany()
+    .HasForeignKey(e => e.CartItemId)
+    .OnDelete(DeleteBehavior.SetNull);
 
             modelBuilder.Entity<Category>().HasData(
            new Category { Id = 1, Name = "Elektronika", Description = "Elektronski ure�aji", IsActive = true, CreatedAt = DateTime.UtcNow },

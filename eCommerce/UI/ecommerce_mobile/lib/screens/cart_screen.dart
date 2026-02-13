@@ -1,6 +1,10 @@
 import 'package:ecommerce_mobile/layouts/master_screen.dart';
+import 'package:ecommerce_mobile/model/cart_custom.dart';
 import 'package:ecommerce_mobile/model/cart_provider.dart';
 import 'package:ecommerce_mobile/model/cart.dart';
+import 'package:ecommerce_mobile/model/search_result.dart';
+import 'package:ecommerce_mobile/providers/auth_provider.dart';
+import 'package:ecommerce_mobile/providers/cart_provider_custom.dart';
 import 'package:ecommerce_mobile/providers/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -14,12 +18,23 @@ class CartScreen extends StatefulWidget {
 
 class _CartScreenState extends State<CartScreen> {
   late CartProvider cartProvider;
+  late CartProviderCustom cartProviderCustom;
+  SearchResult<CartCustom>? data;
 
   @override
   void initState() {
     super.initState();
     cartProvider = context.read<CartProvider>();
+    cartProviderCustom = context.read<CartProviderCustom>();
     cartProvider.loadData();
+    loadData();
+  }
+
+  void loadData() async {
+    var cart =
+        await cartProviderCustom.get(filter: {"fts": AuthProvider.username});
+    this.data = cart;
+    setState(() {});
   }
 
   @override
@@ -153,6 +168,7 @@ class _CartScreenState extends State<CartScreen> {
                 IconButton(
                   onPressed: () async {
                     await cartProvider.removeFromCart(item.product);
+                    await cartProvider.loadData();
                   },
                   icon: Icon(Icons.delete, color: Colors.red),
                 ),
@@ -205,7 +221,10 @@ class _CartScreenState extends State<CartScreen> {
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
+                await cartProviderCustom.update(data!.items!.first.id!);
+                loadData();
+                print(data!.items!.first.isCheckout);
                 // TODO: Implement checkout functionality
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(

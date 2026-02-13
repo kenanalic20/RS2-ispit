@@ -14,8 +14,6 @@ namespace eCommerce.Model.Responses
         // Items in cart
         public List<CartItemResponse> CartItems { get; set; } = new List<CartItemResponse>();
         
-        // Computed properties
-        // public int TotalItems => CartItems.Sum(x => x.Quantity);
-        // public decimal TotalPrice => CartItems.Sum(x => x.Product.Price * x.Quantity);
+        public bool isCheckout { get; set; }
     }
 }

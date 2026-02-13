@@ -10,14 +10,16 @@ class CartCustom {
   final DateTime? createdAt;
   final DateTime? updatedAt;
   List<CartItemCustom> cartItems;
+  final bool isCheckout;
 
-  CartCustom({
-    this.id,
-    this.userId,
-    this.createdAt,
-    this.updatedAt,
-    List<CartItemCustom>? cartItems,
-  }) : cartItems = cartItems ?? [];
+  CartCustom(
+      {this.id,
+      this.userId,
+      this.createdAt,
+      this.updatedAt,
+      List<CartItemCustom>? cartItems,
+      this.isCheckout = false})
+      : cartItems = cartItems ?? [];
 
   factory CartCustom.fromJson(Map<String, dynamic> json) =>
       _$CartCustomFromJson(json);

@@ -5,7 +5,8 @@ namespace eCommerce.Model.Requests
     public class CartEventIB200116Request
     {
         public int? CartId { get; set; }
-        public int? UserId { get; set; }
+        public int? CartItemId { get; set; }
+        public string? Username { get; set; }
         public string? EventType { get; set; }
         public DateTime? CreatedAt { get; set; }
         [Column(TypeName = "decimal(18,2)")]

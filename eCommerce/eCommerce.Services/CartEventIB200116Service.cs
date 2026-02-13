@@ -1,3 +1,4 @@
+using eCommerce.Model;
 using eCommerce.Model.Requests;
 using eCommerce.Model.Responses;
 using eCommerce.Model.SearchObjects;
@@ -20,10 +21,20 @@ namespace eCommerce.Services
             return query.Include(x=>x.Cart).ThenInclude(x=>x.CartItems).Include(x=>x.User);
         }
 
-        // protected override async Task BeforeInsert(CartEventIB200116 entity,CartEventIB200116Request request)
+        protected override async Task BeforeInsert(CartEventIB200116 entity,CartEventIB200116Request request)
+        {
+            entity.CreatedAt=DateTime.UtcNow;
+            if (string.IsNullOrEmpty(request.Username))
+            {
+                throw  new UserException("Username missing");
+            }
+            var user =await _context.Users.FirstOrDefaultAsync(x=>x.Username==request.Username);
+            entity.UserId = user.Id;
+            entity.CartItemId = request.CartItemId;
+        }
+        // public async Task UpadteQuantity(CartItem cartItem)
         // {
-        //     entity.CreatedAt=DateTime.Now;
-        //     entity.EventType="Dodavanje proizvoda";
+        //     var 
         // }
         // protected virtual async Task BeforeUpdate(CartEventIB200116 entity, CartEventIB200116Request request)
         // {
